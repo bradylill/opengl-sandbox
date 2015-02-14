@@ -1,6 +1,6 @@
-(ns opengl-sandbox)
+(ns opengl-sandbox.core
+  (:require [opengl-sandbox.tut1 :as tut1]))
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defn -main []
+   (println "Starting")
+   (tut1/run))

@@ -1,4 +1,4 @@
-(ns opengl-sandbox.tut4
+(ns opengl-sandbox.basic.tut4
    (:import [org.lwjgl.opengl DisplayMode Display GL11]
             [org.lwjgl.input Keyboard]
             [org.lwjgl Sys]))

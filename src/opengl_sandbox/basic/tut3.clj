@@ -1,4 +1,4 @@
-(ns opengl-sandbox.tut3
+(ns opengl-sandbox.basic.tut3
    (:import [org.lwjgl.opengl DisplayMode Display GL11]))
 
 (def screen-width 800)

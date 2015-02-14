@@ -1,4 +1,4 @@
-(ns opengl-sandbox.tut2
+(ns opengl-sandbox.basic.tut2
    (:import [org.lwjgl.opengl DisplayMode Display]
             [org.lwjgl.input Keyboard Mouse]))
 

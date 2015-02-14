@@ -1,4 +1,4 @@
-(ns opengl-sandbox.tut1
+(ns opengl-sandbox.basic.tut1
    (:import [org.lwjgl.opengl DisplayMode Display]))
 
 (defn game-loop []

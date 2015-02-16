@@ -1,4 +1,5 @@
 (ns opengl-sandbox.antons.hello-triangle
+  (:require [clojure.java.io :as jio])
   (:import [org.lwjgl BufferUtils]
            [org.lwjgl.opengl Display DisplayMode PixelFormat ContextAttribs
                              GL11 GL15 GL20 GL30]))
@@ -8,30 +9,27 @@
                  0.5 -0.5 0.0
                 -0.5 -0.5 0.0 ]))
 
+(defn load-shader-source [file]
+  (-> (jio/resource file)
+      (.getPath)
+      (slurp)))
+
 (def vertex-shader
-  (str
-    "#version 410\n"
-    "in vec3 vp;"
-    "void main() {"
-    "  gl_Position = vec4 (vp.x, vp.y, vp.z, 1.0);"
-    "}"))
+  {:src (load-shader-source "shaders/hello_triangle.vert")
+   :type GL20/GL_VERTEX_SHADER})
 
 (def fragment-shader
-  (str
-    "#version 410\n"
-    "out vec4 frag_colour;"
-    "void main() {"
-    "  frag_colour = vec4 (0.5, 0.0, 0.5, 1.0);"
-    "}"))
+  {:src (load-shader-source "shaders/hello_triangle.frag")
+   :type GL20/GL_FRAGMENT_SHADER})
+
+(defn compile-shader [shader-src shader-type]
+ (let [id (GL20/glCreateShader shader-type)]
+    (GL20/glShaderSource id shader-src)
+    (GL20/glCompileShader id)
+    id))
 
 (defn compile-shaders []
-  (let [vs (GL20/glCreateShader GL20/GL_VERTEX_SHADER)
-        fs (GL20/glCreateShader GL20/GL_FRAGMENT_SHADER)]
-    (GL20/glShaderSource vs vertex-shader)
-    (GL20/glCompileShader vs)
-    (GL20/glShaderSource fs fragment-shader)
-    (GL20/glCompileShader fs)
-    [vs fs]))
+  (map #(compile-shader (:src %) (:type %))  [vertex-shader fragment-shader]))
 
 (defn create-shader-program []
   (let [shader-program (GL20/glCreateProgram)

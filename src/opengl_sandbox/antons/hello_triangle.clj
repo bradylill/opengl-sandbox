@@ -6,20 +6,22 @@
                              GL11 GL15 GL20 GL30]))
 
 (def triangle-points
-  (float-array [ 0.0  0.5 0.0
-                 0.5 -0.5 0.0
-                -0.5 -0.5 0.0 ]))
+  [ 0.0  0.5 0.0
+    0.5 -0.5 0.0
+   -0.5 -0.5 0.0 ])
 
 (def colour-points
-  (float-array [ 1.0 0.0 0.0
-                 0.0 1.0 0.0
-                 0.0 0.0 1.0]))
+  [ 1.0 0.0 0.0
+    0.0 1.0 0.0
+    0.0 0.0 1.0 ])
 
 (def matrix
-  (float-array [ 1.0 0.0 0.0 0.0
-                 0.0 1.0 0.0 0.0
-                 0.0 0.0 1.0 0.0
-                 0.5 0.0 0.0 1.0 ]))
+  [ 1.0 0.0 0.0 0.0
+    0.0 1.0 0.0 0.0
+    0.0 0.0 1.0 0.0
+    0.5 0.0 0.0 1.0 ])
+
+(def speed 1.0)
 
 (defn load-shader-source [file]
   (-> (jio/resource file)
@@ -54,7 +56,7 @@
 (defn create-float-buffer [data]
   (let [float-buffer (BufferUtils/createFloatBuffer (count data))]
     (doto float-buffer
-      (.put data)
+      (.put (float-array data))
       (.flip))
     float-buffer))
 

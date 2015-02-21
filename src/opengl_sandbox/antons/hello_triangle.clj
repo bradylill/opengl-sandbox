@@ -1,6 +1,7 @@
 (ns opengl-sandbox.antons.hello-triangle
   (:require [clojure.java.io :as jio])
   (:import [org.lwjgl BufferUtils]
+           [org.lwjgl.input Keyboard]
            [org.lwjgl.opengl Display DisplayMode PixelFormat ContextAttribs
                              GL11 GL15 GL20 GL30]))
 
@@ -80,13 +81,20 @@
     (GL30/glBindVertexArray 0)
     vao))
 
+(defn isRunning? []
+  (not (or (Display/isCloseRequested)
+           (Keyboard/isKeyDown (Keyboard/KEY_Q)))))
+
 (defn render-loop []
   (let [vao (populate-vao (map create-float-buffer [triangle-points colour-points]))
         shader-program (create-shader-program)]
-    (while (not (Display/isCloseRequested))
+    (loop [running (isRunning?)]
       (Display/update)
       (draw shader-program vao)
-      (Display/sync 60))))
+      (Display/sync 60)
+      (when running
+        (recur (isRunning?))))
+    (println "Stopping...")))
 
 (defn init-gl []
   (GL11/glEnable GL11/GL_DEPTH_TEST)

@@ -9,6 +9,11 @@
                  0.5 -0.5 0.0
                 -0.5 -0.5 0.0 ]))
 
+(def colour-points
+  (float-array [ 1.0 0.0 0.0
+                 0.0 1.0 0.0
+                 0.0 0.0 1.0]))
+
 (defn load-shader-source [file]
   (-> (jio/resource file)
       (.getPath)
@@ -59,6 +64,7 @@
 
 (defn create-vbo [points attrib-index]
   (let [vbo (GL15/glGenBuffers)]
+    (GL20/glEnableVertexAttribArray attrib-index)
     (GL15/glBindBuffer GL15/GL_ARRAY_BUFFER vbo)
     (GL15/glBufferData GL15/GL_ARRAY_BUFFER points GL15/GL_STATIC_DRAW)
     (GL20/glVertexAttribPointer attrib-index 3 GL11/GL_FLOAT false 0 0)
@@ -67,7 +73,6 @@
 (defn populate-vao [all-points]
   (let [vao (GL30/glGenVertexArrays)]
     (GL30/glBindVertexArray vao)
-    (GL20/glEnableVertexAttribArray 0)
 
     (doseq [points all-points]
       (create-vbo points (.indexOf all-points points)))
@@ -76,7 +81,7 @@
     vao))
 
 (defn render-loop []
-  (let [vao (populate-vao (map create-float-buffer [triangle-points]))
+  (let [vao (populate-vao (map create-float-buffer [triangle-points colour-points]))
         shader-program (create-shader-program)]
     (while (not (Display/isCloseRequested))
       (Display/update)

@@ -15,6 +15,12 @@
                  0.0 1.0 0.0
                  0.0 0.0 1.0]))
 
+(def matrix
+  (float-array [ 1.0 0.0 0.0 0.0
+                 0.0 1.0 0.0 0.0
+                 0.0 0.0 1.0 0.0
+                 0.5 0.0 0.0 1.0 ]))
+
 (defn load-shader-source [file]
   (-> (jio/resource file)
       (.getPath)
@@ -56,9 +62,11 @@
   (GL11/glClear (bit-or GL11/GL_COLOR_BUFFER_BIT GL11/GL_DEPTH_BUFFER_BIT))
   (GL11/glClearColor 0.6 0.6 0.6 1.0))
 
-(defn draw [shader-program vao]
+(defn draw [shader-program vao update-matrix]
   (clear-screen)
   (GL20/glUseProgram shader-program)
+  (-> (GL20/glGetUniformLocation shader-program "update_matrix")
+      (GL20/glUniformMatrix4 false update-matrix))
   (GL30/glBindVertexArray vao)
   (GL11/glDrawArrays GL11/GL_TRIANGLES 0 3)
   (GL30/glBindVertexArray 0))
@@ -87,10 +95,11 @@
 
 (defn render-loop []
   (let [vao (populate-vao (map create-float-buffer [triangle-points colour-points]))
-        shader-program (create-shader-program)]
+        shader-program (create-shader-program)
+        update-matrix (create-float-buffer matrix)]
     (loop [running (isRunning?)]
       (Display/update)
-      (draw shader-program vao)
+      (draw shader-program vao update-matrix)
       (Display/sync 60)
       (when running
         (recur (isRunning?))))
